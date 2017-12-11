@@ -14,8 +14,10 @@ export const doLogin = (payload) =>
         credentials:'include',
         body: JSON.stringify({username:payload.username,password:payload.password})
     }).then(res => {
+      console.log(res);
         return res;
       })
+
         .catch(error => {
             console.log("This is error");
             return error;
@@ -30,6 +32,7 @@ export const doSignUp = (payload) =>
           },
         body: JSON.stringify({firstname:payload.firstname,lastname:payload.lastname,username:payload.username,password:payload.password})
     }).then(res => {
+      console.log(res);
         return res.status;
       })
         .catch(error => {
@@ -132,6 +135,16 @@ export const filesR = (payload) =>
             console.log("This is error");
             return error;
           });
+
+export const upload = (payload) =>
+    fetch(`${api}/users/upload`, {
+        method: 'POST',
+        body: payload
+    }).then(res => res.json())
+        .catch(error => {
+            console.log("This is error");
+            return error;
+        });
 
 export const groups = (payload) =>
     fetch(`${api}/users/own_groups_files`, {

@@ -1,0 +1,8 @@
+com\entity\Files.class
+com\service\FileServices.class
+com\entity\Message.class
+com\entity\UserActivity.class
+com\service\EmailServiceImpl.class
+com\repository\UserActivityRepository.class
+com\service\EmailService.class
+com\service\UserActivityServices.class

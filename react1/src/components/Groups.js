@@ -28,6 +28,15 @@ class Groups extends Component {
     }
     else
     {
+
+    }
+    /*var token = localStorage.getItem('jwtToken');
+    if(!token)
+    {
+      this.props.history.push('/');
+    }
+    else
+    {
       var status;
       if(this.props.select.username!=="")
       {
@@ -70,7 +79,7 @@ class Groups extends Component {
             }
         });
       }
-    }
+    }*/
   }
 
   onOwnDelete = (item) => {
@@ -100,7 +109,7 @@ class Groups extends Component {
 
   onSignOut = () => {
    localStorage.removeItem('jwtToken');
-   axios.post(`http://localhost:8080/users/logout`,{credentials:'include',params:{username:this.props.select.username}})
+   axios.post(`http://localhost:8080/users/logout`,{withCredentials:'include',username:this.props.select.username})
       .then((res) => {
         console.log('Signed Out Successfully..!!');
       }).catch((err) => {

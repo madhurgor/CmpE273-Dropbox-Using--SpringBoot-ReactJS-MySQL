@@ -19,7 +19,7 @@ class App extends React.Component {
             <div className="App">
                 <BrowserRouter>
                   <div>
-                    <Route exact path="/" component={Login}/>
+
                     <Route exact path="/homepage" component={HomePage}/>
                     <Route exact path="/signup" component={SignUp}/>
                     <Route exact path="/about" component={About}/>
@@ -28,6 +28,7 @@ class App extends React.Component {
                     <Route exact path="/group" component={Groups}/>
                     <Route exact path="/group_shared" component={OwnShared}/>
                     <Route exact path="/other_shared" component={OtherShared}/>
+                    <Route exact path="/" component={Login}/>
                   </div>
                 </BrowserRouter>
             </div>

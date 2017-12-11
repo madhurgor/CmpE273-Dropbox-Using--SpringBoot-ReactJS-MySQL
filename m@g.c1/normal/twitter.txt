@@ -1,0 +1,54 @@
+package com.company;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+
+        String start=stdin.readLine();
+        String s=start.substring(0,7);
+        String e=start.substring(8).trim();
+
+        String t=stdin.readLine();
+
+        String line;
+        String r="";
+        while ((line = stdin.readLine()) != null && line.length()!= 0) {
+            String input[] = line.split("\n");
+            if(s.compareTo(input[0].substring(0,7))<=0 && e.compareTo(input[0].substring(0,7))>0){
+                r+=input[0]+"\n";
+            }
+        }
+        String s1[]=r.split("\n");
+        Arrays.sort(s1, Collections.reverseOrder());
+        List<String> t2=new ArrayList<String>();
+        String f="";
+        String t1="";
+        for (int i = 0; i < s1.length; i++) {
+            t1=s1[i].substring(10);
+            t2.clear();
+            t2.add(s1[i].substring(10));
+            for(int j = i+1; j < s1.length; j++){
+                if(s1[i].substring(0,7).compareTo(s1[j].substring(0,7))==0){
+                    t1+=s1[j].substring(10);
+                    t2.add(s1[j].substring(10));
+                    i++;
+                }
+            }
+            for(int j=0;j<t2.size();j++){
+                for(int k=j+1;k<t2.size();k++){
+                    if(Integer.parseInt(t2.get(k).substring(t2.get(k).lastIndexOf(" ")+1))>Integer.parseInt(t2.get(k).substring(t2.get(k).lastIndexOf(" ")+1))){
+
+                    }
+                }
+            }
+            f+=s1[i].substring(0,7)+t1+"\n";
+        }
+        System.out.println(f.substring(0,f.length()-1));
+    }
+}

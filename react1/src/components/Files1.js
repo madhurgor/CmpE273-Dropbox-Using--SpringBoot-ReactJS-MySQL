@@ -48,6 +48,28 @@ class Files1 extends Component {
     if(!token)
     {
       this.props.history.push('/');
+    }else{
+      var self=this;
+      axios.post('http://localhost:8080/users/files_fetch', {username:this.props.select.username,path:this.props.select.path})
+        .then(function (res) {
+          console.log(res);
+          if (res.status === 200) {
+            self.props.folderChange(res.data.folders);
+            self.props.fileChange(res.data.files);
+          }else{
+              self.setState({
+                  message: "Something went Wrong..!!"
+                });
+          }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+    /*var token = localStorage.getItem('jwtToken');
+    if(!token)
+    {
+      this.props.history.push('/');
     }
     else
     {
@@ -75,7 +97,7 @@ class Files1 extends Component {
             }
         });
       }
-    }
+    }*/
   }
 
   openModal() {
@@ -99,7 +121,7 @@ class Files1 extends Component {
          .then((res) => {
            console.log(res);
            console.log('downloaded..');
-           FileDownload(res.data.data,item);
+           FileDownload(res.data,item);
          }).catch((err) => {
            window.alert(`${item} cannot be downloaded!! Please try again later..`)
       })
@@ -165,7 +187,7 @@ class Files1 extends Component {
 
   onSignOut = () => {
    localStorage.removeItem('jwtToken');
-   axios.post(`http://localhost:8080/users/logout`,{credentials:'include',params:{username:this.props.select.username}})
+   axios.post(`http://localhost:8080/users/logout`,{withCredentials:'include',username:this.props.select.username})
       .then((res) => {
         console.log('Signed Out Successfully..!!');
       }).catch((err) => {
@@ -188,7 +210,17 @@ class Files1 extends Component {
 
   onFilesUpload = () => {
     if(this.state.files.length>0){
-      var formData = new FormData()
+      var formData=new FormData();
+      formData.append("f1",this.state.files[0]);
+      formData.append("username",this.props.select.username);
+      formData.append("path",this.props.select.path);
+      API.upload(formData)
+      .then((data)=>{
+        window.alert(`1 file uploaded succesfully!`);
+        this.refs.files.removeFiles();
+      })
+      .catch(err => {window.alert('Error uploading files :(');this.refs.files.removeFiles();window.location.replace('/homepage');})
+      /*var formData = new FormData()
       Object.keys(this.state.files).forEach((key) => {
         const file = this.state.files[key]
         formData.append(key, file, file.name || 'file')
@@ -227,7 +259,7 @@ class Files1 extends Component {
       .catch(err => {
         window.alert('Error uploading files :(');
         this.refs.files.removeFiles();
-      })
+      })*/
     }else{
       window.alert(`Please select file first by clicking on "Select File" button!!`);
     }

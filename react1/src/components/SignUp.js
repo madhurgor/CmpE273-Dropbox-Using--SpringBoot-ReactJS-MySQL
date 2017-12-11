@@ -4,6 +4,7 @@ import {
   withRouter
 } from 'react-router-dom';
 import './Login.css';
+import axios from 'axios';
 import { Redirect } from 'react-router';
 import * as API from '../api/API';
 
@@ -26,7 +27,36 @@ export class SignUp extends Component {
       });
       document.getElementById('error2').style.display="block";
     }else{
-      API.doSignUp(this.state)
+      var self=this;
+      axios.post('http://localhost:8080/users/signup', {firstname:self.state.firstname,lastname:self.state.lastname,username:self.state.username,password:self.state.password})
+        .then(function (res) {
+          console.log(res);
+          if(res.status===200){
+            if (res.data.message === 'signed up') {
+                self.setState({
+                    message: "Successfully signed up..!!"
+                });
+                self.setState({ fireRedirect: true })
+                //this.props.router.push("/")
+            } else if (res.data.message === 'already exists') {
+                self.setState({
+                    message: "You have signed up already..!!"
+                });
+                document.getElementById('error2').style.display="block";
+                //this.login1();
+            }
+          } else {
+                self.setState({
+                  message: "Something went wrong in sign up..!!"
+              });
+              //this.login1();
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      /*API.doSignUp(this.state)
           .then((status) => {
               if (status === 201) {
                   this.setState({
@@ -46,7 +76,7 @@ export class SignUp extends Component {
                   });
                   //this.login1();
               }
-          });
+          });*/
         }
   };
 

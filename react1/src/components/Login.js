@@ -4,6 +4,7 @@ import {
   withRouter
 } from 'react-router-dom';
 import './Login.css';
+import axios from 'axios';
 import * as API from '../api/API';
 import {connect} from 'react-redux';
 
@@ -27,8 +28,37 @@ class Login extends Component {
         });
         document.getElementById('error1').style.display="block";
       } else {
-        var status;
-        API.doLogin(userdata)
+        var self=this;
+        axios.post('http://localhost:8080/users/login', {
+            username: userdata.username,
+            password: userdata.password
+          })
+          .then(function (res) {
+            console.log(res);
+            if (res.status === 200) {
+              if(res.data.username!==undefined){
+                localStorage.setItem('jwtToken',res.data.username);
+                self.login();
+              }else if(res.data.message!==undefined){
+                self.setState({
+                    //isLoggedIn: false,
+                    message: "Wrong username or password. Try again..!!"
+                  });
+              document.getElementById('error1').style.display="block";
+            }
+          }else{
+              self.setState({
+                  //isLoggedIn: false,
+                  message: "Something went Wrong..!!"
+                });
+              document.getElementById('error1').style.display="block";
+              //this.login1();
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        /*API.doLogin(userdata)
             .then((res) => {
               status = res.status;
               try{
@@ -36,15 +66,16 @@ class Login extends Component {
               }
               catch(err){console.log(err);}
             }).then((json) => {
-              if (status === 201) {
-                  /*this.setState({
-                      isLoggedIn: true
-                  });*/
-                  const token = json.token;
-                  localStorage.setItem('jwtToken',token);
+              console.log(json);
+              if (status === 200) {
+                  ///this.setState({
+                  ///    isLoggedIn: true
+                  ///});
+                  //const token = json.token;
+                  //localStorage.setItem('jwtToken',token);
                   //this.props.storeToken(localStorage.getItem('jwtToken'));
                   this.login();
-              } else if (status === 401) {
+              } else if (status === 204) {
                   this.setState({
                       //isLoggedIn: false,
                       message: "Wrong username or password. Try again..!!"
@@ -59,7 +90,7 @@ class Login extends Component {
                   document.getElementById('error1').style.display="block";
                   //this.login1();
               }
-          });
+          });*/
         }
       };
 

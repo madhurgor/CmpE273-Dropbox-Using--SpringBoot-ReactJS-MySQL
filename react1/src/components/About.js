@@ -34,6 +34,48 @@ class About extends Component {
     }
     else
     {
+      var self=this;
+      axios.post('http://localhost:8080/users/about', {username:this.props.select.username,})
+        .then(function (res) {
+          console.log(res);
+          if (res.status === 200) {
+            console.log("correct..");
+            self.setState({
+              firstname: res.data.firstname,
+              lastname:res.data.lastname,
+              phone_no:res.data.phone_no,
+              hobbies:res.data.hobbies,
+              education:res.data.education,
+              work:res.data.work,
+              le:res.data.le,
+              interest:res.data.interest
+            })
+            data=[res.data.firstname,
+                  res.data.lastname,
+                  res.data.work,
+                  res.data.education,
+                  res.data.hobbies,
+                  res.data.phone_no,
+                  res.data.le,
+                  res.data.interest];
+            self.props.setInfo(data);
+          }else{
+              self.setState({
+                  message: "Something went Wrong..!!"
+                });
+          }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+    /*var token = localStorage.getItem('jwtToken');
+    if(!token)
+    {
+      this.props.history.push('/');
+    }
+    else
+    {
       var status;
       if(this.props.select.username!=="")
       {
@@ -78,7 +120,7 @@ class About extends Component {
           }
         });
       }
-    }
+    }*/
   }
 
   updateInfo = () => {
@@ -87,7 +129,7 @@ class About extends Component {
 
   onSignOut = () => {
    localStorage.removeItem('jwtToken');
-   axios.post(`http://localhost:8080/users/logout`,{credentials:'include',params:{username:this.props.select.username}})
+   axios.post(`http://localhost:8080/users/logout`,{withCredentials:'include',username:this.props.select.username})
       .then((res) => {
         console.log('Signed Out Successfully..!!');
       }).catch((err) => {

@@ -33,49 +33,6 @@ class AboutChange extends Component {
     {
       this.props.history.push('/');
     }
-    else
-    {
-      var status;
-      if(this.props.select.username!=="")
-      {
-        API.about(this.props.select.username)
-            .then((res) => {
-              status = res.status;
-              try{
-                return res.json();
-              }
-              catch(err){window.alert(`Some Error: ${err}`);}
-            }).then((json) => {
-              if (status === 201) {
-                  this.setState({
-                    firstname: json.firstname,
-                    lastname:json.lastname,
-                    work:json.work,
-                    education:json.education,
-                    hobbies:json.hobbies,
-                    phone_no:json.phone_no,
-                    le:json.le,
-                    interest:json.interest
-                  })
-                  //this.props.storeToken(localStorage.getItem('jwtToken'));
-                  //this.login();
-                  data=[json.firstname,
-                        json.lastname,
-                        json.work,
-                        json.education,
-                        json.hobbies,
-                        json.phone_no,
-                        json.le,
-                        json.interest];
-              this.props.setInfo(data);
-              } else {
-                  this.setState({
-                      message: "Something went Wrong..!!"
-                  });
-              }
-          });
-      }
-    }
   }
 
   updateInfo = () => {
@@ -84,12 +41,12 @@ class AboutChange extends Component {
     API.aboutChange({username:this.props.select.username,firstname:document.getElementById('fn').value,lastname:document.getElementById('ln').value,phone_no:document.getElementById('phone_no').value,education:document.getElementById('education').value,hobbies:document.getElementById('hobbies').value,work:document.getElementById('work').value,le:document.getElementById('le').value,interest:document.getElementById('interest').value})
     .then((res) => {
       status = res.status;
-      try{
+      /*try{
         return res.json();
       }
       catch(err){window.alert(`Some Error: ${err}`);}
-    }).then((json) => {
-      if (status === 201) {
+    }).then((json) => {*/
+      if (status === 200) {
           this.props.history.push('/about');
       } else {
           window.alert("Something went wrong while updating your Personal Information!!")
@@ -99,7 +56,7 @@ class AboutChange extends Component {
 
   onSignOut = () => {
    localStorage.removeItem('jwtToken');
-   axios.post(`http://localhost:8080/users/logout`,{credentials:'include',params:{username:this.props.select.username}})
+   axios.post(`http://localhost:8080/users/logout`,{withCredentials:'include',username:this.props.select.username})
       .then((res) => {
         console.log('Signed Out Successfully..!!');
       }).catch((err) => {

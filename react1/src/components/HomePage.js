@@ -50,6 +50,30 @@ class HomePage extends Component {
     }
     else
     {
+      var self=this;
+      axios.post('http://localhost:8080/users/files_fetchR', {username:this.props.select.username})
+        .then(function (res) {
+          console.log(res);
+          if (res.status === 200) {
+            console.log("star files fetched on home page");
+            self.props.fileChangeR(res.data.files);
+          }else{
+              self.setState({
+                  message: "Something went Wrong..!!"
+                });
+          }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+    /*var token = localStorage.getItem('jwtToken');
+    if(!token)
+    {
+        this.props.history.push('/');
+    }
+    else
+    {
       var status;
       if(this.props.select.username!=="")
       {
@@ -73,7 +97,7 @@ class HomePage extends Component {
               }
           });
       }
-    }
+    }*/
   }
 
   openModal() {
@@ -152,7 +176,7 @@ class HomePage extends Component {
       axios.get(`http://localhost:8080/users/downloadR`,{params:{file:item,username:this.props.select.username}})
          .then((res) => {
            console.log('downloaded..');
-           FileDownload(res.data.data,item);
+           FileDownload(res.data,item);
          }).catch((err) => {
            window.alert(`${item} cannot be downloaded!! Please try again later..`)
          })
@@ -172,18 +196,27 @@ class HomePage extends Component {
 
   onFilesUpload = () => {
     if(this.state.files.length>0){
-      var formData = new FormData()
+      var formData=new FormData();
+      formData.append("f1",this.state.files[0]);
+      formData.append("username",this.props.select.username);
+      API.upload(formData)
+      .then((data)=>{
+        window.alert(`1 file uploaded succesfully!`);
+        this.refs.files.removeFiles();
+      })
+      .catch(err => {window.alert('Error uploading files :(');this.refs.files.removeFiles();window.location.replace('/homepage');})
+      /*var formData = new FormData()
       Object.keys(this.state.files).forEach((key) => {
         const file = this.state.files[key]
         formData.append(key, file, file.name || 'file')
         //formData.append(key, new Blob([file], { type: file.type }), file.name || 'file')
       })
-      axios.post(`http://localhost:8080/users/files`, formData, {params:{'username':`${this.props.select.username}`}})
+      axios.post(`http://localhost:8080/users/upload`, formData, {params:{'username':`${this.props.select.username}`}})
       .then(response => {
         window.alert(`${this.state.files.length} files uploaded succesfully!`);
         this.refs.files.removeFiles();
       })
-      .catch(err => {window.alert('Error uploading files :(');this.refs.files.removeFiles();window.location.replace('/homepage');})
+      .catch(err => {window.alert('Error uploading files :(');this.refs.files.removeFiles();window.location.replace('/homepage');})*/
     }else{
       window.alert(`Please select file first by clicking on "Select File" button!!`);
     }
