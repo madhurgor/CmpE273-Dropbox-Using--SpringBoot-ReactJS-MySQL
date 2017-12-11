@@ -1,10 +1,13 @@
 package com.controller;
 
 import com.entity.Files;
+import com.entity.Group;
 import com.entity.Message;
 import com.entity.User;
+import com.repository.GroupRepository;
 import com.repository.UserActivityRepository;
 import com.service.FileServices;
+import com.service.GroupServices;
 import com.service.UserActivityServices;
 import com.service.UserService;
 import org.json.JSONObject;
@@ -35,6 +38,8 @@ public class UserController {
     private FileServices fileServices;
     @Autowired
     private UserActivityServices userActivityServices;
+    @Autowired
+    private GroupServices groupServices;
 
     @PostMapping(path="/login",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@RequestBody String user, HttpSession session)
@@ -235,4 +240,28 @@ public class UserController {
         session.invalidate();
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @GetMapping(path="/group_create",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> group_create(@RequestParam("username") String username,@RequestParam("grp_name") String grp_name,@RequestParam("group[]") String[] member, HttpSession session) throws IOException {
+        System.out.println("creating group named "+grp_name+" for user "+username);
+        fileServices.group_create(username,grp_name,member);
+        for(int i=0;i<member.length;i++){
+            groupServices.save(username,grp_name,member[i]);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    /*@PostMapping(path="/own_groups_files",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> own_groups_files(@RequestBody String user, HttpSession session) {
+        JSONObject jsonObject = new JSONObject(user);
+        System.out.println("fetching groups created on own "+jsonObject.getString("username"));
+        return new ResponseEntity(groupServices.findByOwnerName(jsonObject.getString("username")),HttpStatus.OK);
+    }
+
+    @PostMapping(path="/shared_groups_files",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> shared_groups_files(@RequestBody String user, HttpSession session) {
+        JSONObject jsonObject = new JSONObject(user);
+        System.out.println("fetching groups created on own "+jsonObject.getString("username"));
+        return new ResponseEntity(groupServices.findByMemberName(jsonObject.getString("username")),HttpStatus.OK);
+    }*/
 }

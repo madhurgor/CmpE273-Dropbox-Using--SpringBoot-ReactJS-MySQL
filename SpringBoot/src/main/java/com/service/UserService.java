@@ -56,9 +56,9 @@ public class UserService {
             n.setUsername(username);
             n.setLastname(lastname);
             userRepository.save(n);
-            new File("H:/node/CmpE273-Dropbox-Using--SpringBoot-ReactJS-MySQL/"+username).mkdir();
-            new File("H:/node/CmpE273-Dropbox-Using--SpringBoot-ReactJS-MySQL/"+username+"/normal").mkdir();
-            new File("H:/node/CmpE273-Dropbox-Using--SpringBoot-ReactJS-MySQL/"+username+"/star").mkdir();
+            new File(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+username).mkdir();
+            new File(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+username+"/normal").mkdir();
+            new File(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+username+"/star").mkdir();
             return "signed up";
         }
     }

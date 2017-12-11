@@ -146,6 +146,10 @@ public class FileServices {
         } else {
             dir.delete();
         }
+    }
 
+    public String group_create(String username,String grp_name,String[] member){
+
+        return "group created";
     }
 }

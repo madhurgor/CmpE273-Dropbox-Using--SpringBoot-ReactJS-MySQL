@@ -28,7 +28,39 @@ class Groups extends Component {
     }
     else
     {
-
+      var status;
+      API.groups({username:this.props.select.username})
+          .then((res) => {
+            status = res.status;
+              return res.json();
+          }).then((json) => {
+            if (status === 201) {
+                //this.setState({
+                //  files1:json.files
+                //});
+                this.props.ownFolderChange(json.ownfolders);
+            } else {
+                this.setState({
+                  message: "Something went Wrong..!!"
+            });
+          }
+      });
+      API.groups_s({username:this.props.select.username})
+          .then((res) => {
+            status = res.status;
+              return res.json();
+          }).then((json) => {
+            if (status === 201) {
+                //this.setState({
+                //  files1:json.files
+                //});
+                this.props.groupFolderChange(json.groupfolders);
+            } else {
+                this.setState({
+                  message: "Something went Wrong..!!"
+            });
+          }
+      });
     }
     /*var token = localStorage.getItem('jwtToken');
     if(!token)
