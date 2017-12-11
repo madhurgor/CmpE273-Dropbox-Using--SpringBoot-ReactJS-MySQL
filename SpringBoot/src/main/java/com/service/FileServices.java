@@ -57,7 +57,7 @@ public class FileServices {
         return r;
     }
 
-    public void star(String username,String item,String path) throws IOException {
+    public String star(String username,String item,String path) throws IOException {
         System.out.println(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+username+"/normal/"+path+"/"+item);
         System.out.println(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+username+"/star/"+item);
         File sFile= new File(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+username+"/normal/"+path+"/"+item);
@@ -70,25 +70,33 @@ public class FileServices {
             destChannel = new FileOutputStream(dFile).getChannel();
             destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
         }finally{
-            sourceChannel.close();
-            destChannel.close();
+            try{
+                sourceChannel.close();
+                destChannel.close();
+            }catch(Exception e){
+                System.out.println(e);
+            }
         }
+        return "starred";
     }
 
-    public void unstar(String username,String item) {
+    public String unstar(String username,String item) {
         File file = new File(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+ username + "/star/" + item);
         file.delete();
+        return "unstarred";
     }
 
-    public void delete(String username,String item,String path) {
+    public String delete(String username,String item,String path) {
         File nfile = new File(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+ username + "/normal/"+path+"/" + item);
         File sfile = new File(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+username + "/star/" + item);
         nfile.delete();
         sfile.delete();
+        return "file deleted";
     }
 
-    public void createfolder(String username,String folder,String path) {
+    public String createfolder(String username,String folder,String path) {
         new File(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+username+"/normal/"+path+"/"+folder).mkdir();
+        return "folder created";
     }
 
     public InputStreamResource download(String username,String file,String path) throws IOException{
@@ -101,29 +109,32 @@ public class FileServices {
         return new InputStreamResource(new FileInputStream(file1));
     }
 
-    public void shareS(String username,String file,String[] member) {
+    public String shareS(String username,String file,String[] member) {
         List<String> s=new ArrayList<String>();
         for(int i=0;i<member.length;i++){
             if(!member[i].equals("")){
                 emailServiceImpl.sendMessageWithAttachment(member[i],"no-reply@dropbox.com ✔",username+" has shared file "+file+" with you. Please see attachment to view the file.",""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+ username + "/star/"+ file,file);
             }
         }
+        return "shared";
     }
 
-    public void share(String username,String file,String path,String[] member) {
+    public String share(String username,String file,String path,String[] member) {
         List<String> s=new ArrayList<String>();
         for(int i=0;i<member.length;i++){
             if(!member[i].equals("")){
                 emailServiceImpl.sendMessageWithAttachment(member[i],"no-reply@dropbox.com ✔",username+" has shared file "+file+" with you. Please see attachment to view the file.",""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+ username + "/normal/"+path+"/" + file,file);
             }
         }
+        return "shared";
     }
 
-    public void deletefolder(String username,String folder,String path) {
+    public String deletefolder(String username,String folder,String path) {
         removeDirectory(new File(""+new File(new File(new File(new File(".").getAbsolutePath()).getParent()).getParent())+"/"+username+"/normal/"+path+"/"+folder));
+        return "deleted a folder";
     }
 
-    public static void removeDirectory(File dir) {
+    public void removeDirectory(File dir) {
         if (dir.isDirectory()) {
             File[] files = dir.listFiles();
             if (files != null && files.length > 0) {
@@ -135,5 +146,6 @@ public class FileServices {
         } else {
             dir.delete();
         }
+
     }
 }
